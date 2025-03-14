@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Models.DTO;
+﻿using Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Models;
-using Services;
-using Interfaces;
+using Models.DTO;
 
 namespace TaskAppBackend.Controllers
 {
