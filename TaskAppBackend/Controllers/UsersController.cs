@@ -1,5 +1,4 @@
 ﻿using Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DTO;
@@ -32,7 +31,7 @@ namespace TaskAppBackend.Controllers
                 return BadRequest(ModelState);
             }
 
-            ReponseModel result = _usersService.GetUsuarios(email , pass);
+            ReponseModel result = _usersService.GetUsuarios(email, pass);
             return StatusCode(result.statusCode, result);
         }
 
@@ -47,7 +46,7 @@ namespace TaskAppBackend.Controllers
             {
                 return BadRequest(ModelState);
             }
-            ReponseModel result = _usersService.UpdateUser(email,pass ,id, user);
+            ReponseModel result = _usersService.UpdateUser(email, pass, id, user);
             return StatusCode(result.statusCode, result);
         }
 

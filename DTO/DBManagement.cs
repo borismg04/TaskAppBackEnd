@@ -10,6 +10,7 @@ namespace Models
         }
 
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<TaskModels> Tasks { get; set; }
 
     }
 }
