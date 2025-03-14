@@ -157,7 +157,7 @@ namespace Services
                         statusCode = 201
                     };
                 }
-                taskUpdate.Tarea = task.Tarea;
+                taskUpdate.Nombre_Tarea = task.Nombre_Tarea;
                 taskUpdate.Status = task.Status;
                 taskUpdate.Descripcion = task.Descripcion;
                 taskUpdate.Fecha = task.Fecha;
