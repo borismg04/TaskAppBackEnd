@@ -21,6 +21,17 @@ namespace Services
 
         public ReponseModel GetTasks(string? email, string? pass)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
+
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try
@@ -76,6 +87,17 @@ namespace Services
         // CreateTask
         public ReponseModel CreateTask(string? email, string? pass, TaskModels task)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
+
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try
@@ -122,6 +144,17 @@ namespace Services
 
         public ReponseModel UpdateTask(string? email, string? pass, TaskModels task)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
+
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try
@@ -180,6 +213,17 @@ namespace Services
 
         public ReponseModel DeleteTask(string? email, string? pass, int id)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
+
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try

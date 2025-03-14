@@ -22,11 +22,22 @@ namespace Services
 
         public ReponseModel GetUsuarios(string? email, string? pass)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
+
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try
             {
-                var token = _authService.Authenticate(email, pass);
+                var token = _authService.Authenticate(email!, pass!);
 
                 if (token.result == null)
                 {
@@ -86,11 +97,22 @@ namespace Services
 
         public ReponseModel UpdateUser(string? email, string? pass, int id, UserModel user)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
+
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try
             {
-                var token = _authService.Authenticate(email, pass);
+                var token = _authService.Authenticate(email!, pass!);
 
                 if (token.result == null)
                 {
@@ -157,6 +179,16 @@ namespace Services
 
         public ReponseModel DeleteUser(string? email, string? pass, int id)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+            {
+                return new ReponseModel
+                {
+                    message = "Email and password are required.",
+                    success = false,
+                    result = null,
+                    statusCode = 400
+                };
+            }
             string error = string.Empty;
             DateTime time = DateTime.Now;
             try
