@@ -23,8 +23,8 @@ namespace TaskAppBackend.Controllers
         [Route("GetUsuarios")]
         public IActionResult GetUsuarios()
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
 
             if (!ModelState.IsValid)
             {
@@ -39,8 +39,8 @@ namespace TaskAppBackend.Controllers
         [HttpPost]
         public IActionResult UpdateUser(int id, UserModel user)
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
 
             if (!ModelState.IsValid)
             {
@@ -54,8 +54,8 @@ namespace TaskAppBackend.Controllers
         [HttpDelete]
         public IActionResult DeleteUser(int id)
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
 
             if (!ModelState.IsValid)
             {

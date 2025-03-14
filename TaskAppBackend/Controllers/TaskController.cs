@@ -21,8 +21,8 @@ namespace TaskAppBackend.Controllers
         [Route("GetTasks")]
         public IActionResult GetTasks()
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
 
             if (!ModelState.IsValid)
             {
@@ -37,8 +37,8 @@ namespace TaskAppBackend.Controllers
         [HttpPost]
         public IActionResult CreateTask(TaskModels task)
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -51,8 +51,8 @@ namespace TaskAppBackend.Controllers
         [HttpPost]
         public IActionResult UpdateTask(TaskModels task)
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -65,8 +65,8 @@ namespace TaskAppBackend.Controllers
         [HttpDelete]
         public IActionResult DeleteTask(int id)
         {
-            string email = Request.Headers["email"];
-            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"];
+            string email = Request.Headers["email"]!;
+            string pass = String.IsNullOrEmpty(Request.Headers["pass"]) ? "No aplica" : Request.Headers["pass"]!;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

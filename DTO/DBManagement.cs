@@ -7,6 +7,9 @@ namespace Models
     {
         public DBManagement(DbContextOptions<DBManagement> options) : base(options)
         {
+            /*
+             * Creacion Base de Datos
+             */
         }
 
         public DbSet<UserModel> Users { get; set; }
