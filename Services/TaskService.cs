@@ -19,6 +19,7 @@ namespace Services
             _authService = authService;
         }
 
+        //getTasks
         public ReponseModel GetTasks(string? email, string? pass)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
@@ -37,18 +38,6 @@ namespace Services
             try
             {
                 var token = _authService.Authenticate(email, pass);
-
-                if(token.result == null)
-                {
-                    return new ReponseModel
-                    {
-                        message = "Undefined",
-                        success = false,
-                        result = null,
-                        statusCode = 401
-                    };
-                }
-
                 _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
                 var tasks = _context.Tasks.ToList();
                 if (tasks.Count == 0)
@@ -103,21 +92,7 @@ namespace Services
             try
             {
                 var token = _authService.Authenticate(email, pass);
-
-                if (token.result == null)
-                {
-                    return new ReponseModel
-                    {
-                        message = "Undefined",
-                        success = false,
-                        result = null,
-                        statusCode = 401
-                    };
-                }
-
                 _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
-
-                task.Fecha = time;
                 _context.Tasks.Add(task);
                 _context.SaveChanges();
                 return new ReponseModel

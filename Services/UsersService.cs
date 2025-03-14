@@ -193,22 +193,6 @@ namespace Services
             DateTime time = DateTime.Now;
             try
             {
-                var token = _authService.Authenticate(email, pass);
-
-                if (token.result == null)
-                {
-                    return new ReponseModel
-                    {
-                        message = "Undefined",
-                        success = false,
-                        result = null,
-                        statusCode = 401
-                    };
-                }
-
-                _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
-
-
                 var UserId = _context.Users.Find(id);
 
                 if (UserId == null)
