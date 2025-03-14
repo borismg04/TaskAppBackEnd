@@ -19,7 +19,6 @@ namespace Services
             _authService = authService;
         }
 
-        //getTasks
         public ReponseModel GetTasks(string? email, string? pass)
         {
             string error = string.Empty;
@@ -27,6 +26,18 @@ namespace Services
             try
             {
                 var token = _authService.Authenticate(email, pass);
+
+                if(token.result == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "Undefined",
+                        success = false,
+                        result = null,
+                        statusCode = 401
+                    };
+                }
+
                 _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
                 var tasks = _context.Tasks.ToList();
                 if (tasks.Count == 0)
@@ -70,7 +81,21 @@ namespace Services
             try
             {
                 var token = _authService.Authenticate(email, pass);
+
+                if (token.result == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "Undefined",
+                        success = false,
+                        result = null,
+                        statusCode = 401
+                    };
+                }
+
                 _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
+
+                task.Fecha = time;
                 _context.Tasks.Add(task);
                 _context.SaveChanges();
                 return new ReponseModel
@@ -85,6 +110,129 @@ namespace Services
             {
                 error = "CreateTask: " + ex.Message;
                 var info = ErrorService.CatchService2("CreateTask", error, null, time);
+                return new ReponseModel
+                {
+                    message = "Operation Failed",
+                    success = false,
+                    result = info,
+                    statusCode = 500
+                };
+            }
+        }
+
+        public ReponseModel UpdateTask(string? email, string? pass, TaskModels task)
+        {
+            string error = string.Empty;
+            DateTime time = DateTime.Now;
+            try
+            {
+                var token = _authService.Authenticate(email, pass);
+                if (token.result == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "Undefined",
+                        success = false,
+                        result = null,
+                        statusCode = 401
+                    };
+                }
+                _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
+                var taskUpdate = _context.Tasks.FirstOrDefault(x => x.Id == task.Id);
+                if (taskUpdate == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "No data found",
+                        success = false,
+                        result = null,
+                        statusCode = 201
+                    };
+                }
+                taskUpdate.Nombre_Tarea = task.Nombre_Tarea;
+                taskUpdate.Status = task.Status;
+                taskUpdate.Descripcion = task.Descripcion;
+                taskUpdate.Fecha = task.Fecha;
+                taskUpdate.UserGestion = task.UserGestion;
+                taskUpdate.Prioridad = task.Prioridad;
+                _context.SaveChanges();
+                return new ReponseModel
+                {
+                    message = "Operation Success",
+                    success = true,
+                    result = taskUpdate,
+                    statusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+                error = "UpdateTask: " + ex.Message;
+                var info = ErrorService.CatchService2("UpdateTask", error, null, time);
+                return new ReponseModel
+                {
+                    message = "Operation Failed",
+                    success = false,
+                    result = info,
+                    statusCode = 500
+                };
+            }
+        }
+
+        public ReponseModel DeleteTask(string? email, string? pass, int id)
+        {
+            string error = string.Empty;
+            DateTime time = DateTime.Now;
+            try
+            {
+                var token = _authService.Authenticate(email, pass);
+
+                if (token.result == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "Undefined",
+                        success = false,
+                        result = null,
+                        statusCode = 401
+                    };
+                }
+
+                if (token.result == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "Undefined",
+                        success = false,
+                        result = null,
+                        statusCode = 401
+                    };
+                }
+                _httpContextAccessor.HttpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
+                var taskDelete = _context.Tasks.FirstOrDefault(x => x.Id == id);
+                if (taskDelete == null)
+                {
+                    return new ReponseModel
+                    {
+                        message = "No data found",
+                        success = false,
+                        result = null,
+                        statusCode = 201
+                    };
+                }
+                _context.Tasks.Remove(taskDelete);
+                _context.SaveChanges();
+                return new ReponseModel
+                {
+                    message = "Operation Success",
+                    success = true,
+                    result = taskDelete,
+                    statusCode = 200
+                };
+            }
+            catch (Exception ex)
+            {
+                error = "DeleteTask: " + ex.Message;
+                var info = ErrorService.CatchService2("DeleteTask", error, null, time);
                 return new ReponseModel
                 {
                     message = "Operation Failed",
