@@ -35,6 +35,16 @@ builder.Services.AddScoped<IUsersService>(provider =>
     return new UsersService(context, secretKey, httpContextAccessor, authService);
 });
 
+builder.Services.AddScoped<ITaskService>(provider =>
+{
+    var context = provider.GetRequiredService<DBManagement>();
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var secretKey = configuration["JwtSettings:SecretKey"];
+    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+    var authService = provider.GetRequiredService<IAuthService>();
+    return new TaskService(context, secretKey, httpContextAccessor, authService);
+});
+
 builder.Services.AddDbContext<DBManagement>(options =>
     options.UseInMemoryDatabase("TaskAppDB"));
 
