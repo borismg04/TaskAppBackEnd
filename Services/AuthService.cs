@@ -59,6 +59,7 @@ namespace Services
             }
         }
 
+        // Register user
         public ReponseModel RegisterUser(UserModel user)
         {
             try
