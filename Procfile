@@ -1,1 +1,1 @@
-web: dotnet TaskAppBackend.dll
+web: dotnet TaskAppBackend/TaskAppBackend.dll
