@@ -1,67 +1,38 @@
 using Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Models;
 using Services;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Agregar servicios al contenedor
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IAuthService>(provider =>
-{
-    var context = provider.GetRequiredService<DBManagement>();
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    var secretKey = configuration["JwtSettings:SecretKey"];
-    return new AuthService(context, secretKey);
-});
-
-builder.Services.AddScoped<IUsersService>(provider =>
-{
-    var context = provider.GetRequiredService<DBManagement>();
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    var secretKey = configuration["JwtSettings:SecretKey"];
-    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-    var authService = provider.GetRequiredService<IAuthService>(); 
-    return new UsersService(context, secretKey, httpContextAccessor, authService);
-});
-
-builder.Services.AddScoped<ITaskService>(provider =>
-{
-    var context = provider.GetRequiredService<DBManagement>();
-    var configuration = provider.GetRequiredService<IConfiguration>();
-    var secretKey = configuration["JwtSettings:SecretKey"];
-    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-    var authService = provider.GetRequiredService<IAuthService>();
-    return new TaskService(context, secretKey, httpContextAccessor, authService);
-});
-
-builder.Services.AddDbContext<DBManagement>(options =>
-    options.UseInMemoryDatabase("TaskAppDB"));
-
-// Configuración de JWT
+// Obtener configuración de claves JWT
 var secretKey = builder.Configuration["JwtSettings:SecretKey"];
+if (string.IsNullOrEmpty(secretKey))
+{
+    throw new Exception("JWT SecretKey no está configurada en appsettings.json.");
+}
 var key = Encoding.ASCII.GetBytes(secretKey);
 
-builder.Services.AddAuthentication(x =>
+// Configurar autenticación JWT
+builder.Services.AddAuthentication(options =>
 {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(x =>
+.AddJwtBearer(options =>
 {
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -70,21 +41,44 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+// Configuración de servicios
+builder.Services.AddScoped<IAuthService>(provider =>
+{
+    var context = provider.GetRequiredService<DBManagement>();
+    return new AuthService(context, secretKey);
+});
+
+builder.Services.AddScoped<IUsersService>(provider =>
+{
+    var context = provider.GetRequiredService<DBManagement>();
+    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+    var authService = provider.GetRequiredService<IAuthService>();
+    return new UsersService(context, secretKey, httpContextAccessor, authService);
+});
+
+builder.Services.AddScoped<ITaskService>(provider =>
+{
+    var context = provider.GetRequiredService<DBManagement>();
+    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+    var authService = provider.GetRequiredService<IAuthService>();
+    return new TaskService(context, secretKey, httpContextAccessor, authService);
+});
+
+// Base de datos en memoria (cambiar si usas una real)
+builder.Services.AddDbContext<DBManagement>(options =>
+    options.UseInMemoryDatabase("TaskAppDB"));
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Habilitar Swagger en todos los entornos
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
-// Asegúrate de que UseAuthentication viene antes de UseAuthorization
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run();
+// Configurar puerto dinámico para Heroku
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Run($"http://*:{port}");
